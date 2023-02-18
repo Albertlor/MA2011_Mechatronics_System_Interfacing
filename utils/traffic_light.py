@@ -9,8 +9,8 @@ def empty(a):
 
 cv2.namedWindow("Input")
 cv2.resizeWindow("Input", 420, 120)
-# cv2.createTrackbar("Difference", "Input", 0, 3, empty)
-# cv2.createTrackbar("Priority", "Input", 1, 2, empty)
+cv2.createTrackbar("Difference", "Input", 0, 3, empty)
+cv2.createTrackbar("Priority", "Input", 1, 2, empty)
 cv2.createTrackbar("Time", "Input", 0, 1000, empty)
 
 class Traffic:
@@ -137,7 +137,6 @@ class Traffic:
 
     @staticmethod
     def emergency():
-        print('hiii')
         time = 1000
         priority = 1
 

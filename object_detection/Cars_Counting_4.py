@@ -3,6 +3,7 @@ import numpy as np
 from object_detection.object_detection import ObjectDetection
 import math
 import socket
+import json
 import pickle
 import threading
 
@@ -33,12 +34,32 @@ tracking_objects2 = {}
 track_id1 = 1
 track_id2 = 1
 
-ans = {}
+with open('config2.json') as f:
+    config2 = json.load(f)
 
-# def client(ans):
-#     data = pickle.dumps(ans)
-#     conn.sendall(data)
-#     conn.close()
+def vehicle_num_difference(tracking_objects1, tracking_objects2):
+    num = 0
+    junction = 0
+    ans = {}
+    if (len(tracking_objects1) > len(tracking_objects2)):
+        num = len(tracking_objects1) - len(tracking_objects2)
+        junction = 1
+    elif (len(tracking_objects2) > len(tracking_objects1)):
+        num = len(tracking_objects2) - len(tracking_objects1)
+        junction = 2
+    else:
+        num = 0
+        junction = 0
+
+    message = str(num) + str(junction)
+
+    # config2['difference'] = num
+    # config2['priority'] = junction
+
+    # with open('config2.json', 'w') as f:
+    #     json.dump(config2, f)
+
+    return message
 
 
 while True:
@@ -194,32 +215,11 @@ while True:
         # Make a copy of the points
         center_points_prev_frame2 = center_points_cur_frame2.copy()
 
-        def vehicle_num_difference(tracking_objects1, tracking_objects2):
-            num = 0
-            junction = 0
-            if (len(tracking_objects1) > len(tracking_objects2)):
-                num = len(tracking_objects1) - len(tracking_objects2)
-                junction = 1
-            elif (len(tracking_objects2) > len(tracking_objects1)):
-                num = len(tracking_objects2) - len(tracking_objects1)
-                junction = 2
-            else:
-                num = 0
-                junction = 0
-
-            ans['difference'] = num
-            ans['priority'] = junction
-
-            return ans
-
 
         answer = vehicle_num_difference(tracking_objects1, tracking_objects2)
         print(answer)
-        a = pickle.dumps(answer)
-        client_socket.send(a)
-
-
-
+        #a = json.dumps(answer).encode('utf-8')
+        client_socket.send(answer.encode('utf-8'))
 
         key = cv2.waitKey(1)
         if key == 27:
