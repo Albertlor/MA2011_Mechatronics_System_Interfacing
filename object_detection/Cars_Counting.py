@@ -2,6 +2,11 @@ import cv2
 import numpy as np
 from object_detection.object_detection import ObjectDetection
 import math
+import socket
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((socket.gethostname(), 1234))
+s.listen(5)
 
 # Initialize Object Detection
 od = ObjectDetection()
@@ -187,6 +192,11 @@ while True:
 
     ans = vehicle_num_difference(tracking_objects1, tracking_objects2)
     print(ans)
+
+    clientsocket, address = s.accept()
+    print(f'Connection from {address} has been established.')
+    clientsocket.send(bytes(ans, "utf-8"))
+    clientsocket.close()
 
     key = cv2.waitKey(1)
     if key == 27:

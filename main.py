@@ -2,11 +2,13 @@ import cv2
 import numpy as np
 import multiprocessing as mp
 import json
+import socket
+import pickle
+import struct
 
 from utils import audio
 from utils.audio import Audio
 from utils.traffic_light import Traffic
-#from utils.transmission import transmission
 
 import importlib
 importlib.invalidate_caches()
@@ -14,13 +16,31 @@ importlib.reload(audio)
 Audio = audio.Audio
 
 
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+host_ip = '10.91.41.64'
+port = 9999
+client_socket.connect((host_ip, port))
+
 def traffic():
     # Traffic.difference()
     cv2.setTrackbarPos("Time", "Input", 60)
     time = 60
     previous_value = 0
     while time >= 0:
-        difference, priority, time = Traffic.track_difference()
+        full_msg = ''
+        while True:
+            msg = client_socket.recv(8)
+            if len(msg) <= 0:
+                break
+            full_msg += msg.decode("utf-8")
+
+        if len(full_msg) > 0:
+            print(full_msg)
+
+        difference = full_msg["difference"]
+        priority = full_msg["priority"]
+
+        time = Traffic.track_difference()
         current_value = difference
         if current_value == previous_value:
             Traffic.COUNT = 0 #The value doesn't change, adjust the time only by 1 second
@@ -42,6 +62,8 @@ def traffic():
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+
+client_socket.close()
 
 def special_vehicle():
     Audio.sound_wave()

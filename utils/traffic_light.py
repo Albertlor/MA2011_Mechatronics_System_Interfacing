@@ -3,16 +3,14 @@ import matplotlib.pyplot as plt
 import time
 import numpy as np
 
-from object_detection import Cars_Counting
-
 
 def empty(a):
     pass
 
 cv2.namedWindow("Input")
 cv2.resizeWindow("Input", 420, 120)
-cv2.createTrackbar("Difference", "Input", 0, 3, empty)
-cv2.createTrackbar("Priority", "Input", 1, 2, empty)
+# cv2.createTrackbar("Difference", "Input", 0, 3, empty)
+# cv2.createTrackbar("Priority", "Input", 1, 2, empty)
 cv2.createTrackbar("Time", "Input", 0, 1000, empty)
 
 class Traffic:
