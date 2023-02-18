@@ -2,6 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pyaudio as pa
 import struct
+import time
+import json
+
+from utils.traffic_light import Traffic
 
 
 CHUNK = 1024*2
@@ -66,8 +70,11 @@ class Audio:
             fig.canvas.draw()
             fig.canvas.flush_events()
 
-            print(f'original: {cls.dataInt}')
-            print(f'denormalize: {denormalized_data}')
+            # print(f'x data: {np.fft.fftfreq(len(denormalized_data), t[1]-t[0])}')
+            # print(f'denormalize: {denormalized_data}')
+
+            Audio.special_vehicle([np.fft.fftfreq(len(denormalized_data), t[1]-t[0]), denormalized_data])
+
 
     @staticmethod
     def normalize(signal):
@@ -80,3 +87,40 @@ class Audio:
         mean = np.mean(signal)
         std = np.std(signal)
         return (signal * std) + mean
+
+    @staticmethod
+    def special_vehicle(data):
+        x_val, y_val = data
+
+        count = 0
+        
+        
+        greater_than_900 = x_val > 900
+        lower_than_1200 = x_val < 1200
+        frequency = np.where(greater_than_900&lower_than_1200)
+        if y_val[frequency[0][0]] > 4000:
+            count += 1
+            if count == 1:
+                with open('utils/config.json') as f:
+                    config = json.load(f)
+                EMERGENCY = config["EMERGENCY"]
+                EMERGENCY = 1
+                print(EMERGENCY)
+
+                config["EMERGENCY"] = EMERGENCY
+
+                with open('utils/config.json', 'w') as f:
+                    json.dump(config, f)
+                count = 0
+        else:
+            count = 0
+            with open('utils/config.json') as f:
+                config = json.load(f)
+            EMERGENCY = config["EMERGENCY"]
+            EMERGENCY = 0
+            print(EMERGENCY)
+
+            config["EMERGENCY"] = EMERGENCY
+
+            with open('utils/config.json', 'w') as f:
+                json.dump(config, f)
