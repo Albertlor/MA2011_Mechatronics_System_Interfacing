@@ -78,7 +78,7 @@ while True:
         # Extract region of interest
         roi1 = frame[100: 300, 300:600]
         roi2 = frame[200: 600, 0:300]
-        stacked_img = stackImages.stackImages(0.5, ([frame], [roi1], [roi2]))
+        #stacked_img = stackImages.stackImages(0.5, ([frame], [roi1], [roi2]))
         count1 += 1
         count2 += 1
         if not ret1:
@@ -141,6 +141,7 @@ while True:
 
         for object_id1, pt1a in tracking_objects1.items():
             cv2.circle(roi1, pt1a, 5, (0, 0, 255), -1)
+            cv2.putText(roi1, "Junction 1", (100, 100), 0, 1, (255, 0, 0), 2)
             cv2.putText(roi1, "car", (pt1a[0], pt1a[1] - 7), 0, 1, (0, 0, 255), 2)
 
         print("Tracking objects1")
@@ -204,6 +205,7 @@ while True:
 
         for object_id2, pt2a in tracking_objects2.items():
             cv2.circle(roi2, pt2a, 5, (0, 0, 255), -1)
+            cv2.putText(roi2, "Junction 2", (50, 50), 0, 1, (255, 0, 0), 2)
             cv2.putText(roi2, "car", (pt2a[0], pt2a[1] - 7), 0, 1, (0, 0, 255), 2)
 
         print("Tracking objects2")
@@ -212,7 +214,7 @@ while True:
         print("CUR FRAME LEFT PTS 2")
         print(center_points_cur_frame2)
 
-        cv2.imshow("Frame", stacked_img)
+        cv2.imshow("Frame", frame)
         # cv2.imshow("roi1", roi1)
         # cv2.imshow("roi2", roi2)
 
@@ -229,7 +231,3 @@ while True:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             client_socket.close()
             break
-
-
-cap.release()
-cv2.destroyAllWindows()

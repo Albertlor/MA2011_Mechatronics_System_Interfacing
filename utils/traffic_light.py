@@ -85,7 +85,7 @@ class Traffic:
         
         Therefore, if the priority goes to J1, J1 should turn green faster, vice versa.
         """
-        if Traffic.t > 0 and Traffic.t <= 20:
+        if Traffic.t > 3 and Traffic.t <= 20:
             J1 = [(204, 204, 255), Traffic.t] #red
             J2 = [(153, 255, 204), Traffic.t] #green
             Traffic.display_light_component(J1, J2)
@@ -96,6 +96,10 @@ class Traffic:
         elif Traffic.t > 40 and Traffic.t <=60:
             J1 = [(0, 0, 204), Traffic.t]
             J2 = [(0, 204, 102), Traffic.t]
+            Traffic.display_light_component(J1, J2)
+        elif Traffic.t > 0 and Traffic.t <=3:
+            J1 = [(0, 255, 255), Traffic.t]
+            J2 = [(153, 255, 204), Traffic.t]
             Traffic.display_light_component(J1, J2)
         elif Traffic.t == 0:
             J2 = [(0, 0, 204), Traffic.t]

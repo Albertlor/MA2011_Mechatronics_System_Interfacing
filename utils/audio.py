@@ -36,7 +36,7 @@ class Audio:
             frames_per_buffer=CHUNK
         )
 
-        fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+        fig, ax = plt.subplots(1, 2, figsize=(9, 5))
         x = np.arange(0, 2*CHUNK, 2)
         line1, = ax[0].plot(x, np.random.rand(CHUNK), 'r')
         line2, = ax[1].plot(x, np.random.rand(CHUNK), 'b')
@@ -95,9 +95,9 @@ class Audio:
         count = 0
         
         
-        greater_than_900 = x_val > 900
-        lower_than_1200 = x_val < 1100
-        frequency = np.where(greater_than_900&lower_than_1200)
+        greater_than_1400 = x_val > 1400
+        lower_than_1600 = x_val < 1600
+        frequency = np.where(greater_than_1400&lower_than_1600)
         if y_val[frequency[0][0]] > 4500:
             count += 1
             if count == 1:
