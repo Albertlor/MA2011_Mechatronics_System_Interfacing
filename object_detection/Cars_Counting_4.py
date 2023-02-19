@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from object_detection.object_detection import ObjectDetection
+from stackImages import stackImages
 import math
 import socket
 import json
@@ -39,7 +40,7 @@ with open('config2.json') as f:
 
 def vehicle_num_difference(tracking_objects1, tracking_objects2):
     num = 0
-    junction = 0
+    junction = 1
     ans = {}
     if (len(tracking_objects1) > len(tracking_objects2)):
         num = len(tracking_objects1) - len(tracking_objects2)
@@ -47,11 +48,13 @@ def vehicle_num_difference(tracking_objects1, tracking_objects2):
     elif (len(tracking_objects2) > len(tracking_objects1)):
         num = len(tracking_objects2) - len(tracking_objects1)
         junction = 2
-    else:
-        num = 0
-        junction = 0
+    # else:
+    #     num = 0
+    #     junction = 0
 
     message = str(num) + str(junction)
+    ans['difference'] = num
+    ans['priority'] = junction
 
     # config2['difference'] = num
     # config2['priority'] = junction
@@ -59,7 +62,7 @@ def vehicle_num_difference(tracking_objects1, tracking_objects2):
     # with open('config2.json', 'w') as f:
     #     json.dump(config2, f)
 
-    return message
+    return ans
 
 
 while True:
@@ -75,6 +78,7 @@ while True:
         # Extract region of interest
         roi1 = frame[100: 300, 300:600]
         roi2 = frame[200: 600, 0:300]
+        stacked_img = stackImages.stackImages(0.5, ([frame], [roi1], [roi2]))
         count1 += 1
         count2 += 1
         if not ret1:
@@ -208,9 +212,9 @@ while True:
         print("CUR FRAME LEFT PTS 2")
         print(center_points_cur_frame2)
 
-        cv2.imshow("Frame", frame)
-        cv2.imshow("roi1", roi1)
-        cv2.imshow("roi2", roi2)
+        cv2.imshow("Frame", stacked_img)
+        # cv2.imshow("roi1", roi1)
+        # cv2.imshow("roi2", roi2)
 
         # Make a copy of the points
         center_points_prev_frame2 = center_points_cur_frame2.copy()
@@ -218,11 +222,11 @@ while True:
 
         answer = vehicle_num_difference(tracking_objects1, tracking_objects2)
         print(answer)
-        #a = json.dumps(answer).encode('utf-8')
-        client_socket.send(answer.encode('utf-8'))
+        a = json.dumps(answer).encode('utf-8')
+        client_socket.send(a)
 
-        key = cv2.waitKey(1)
-        if key == 27:
+        
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             client_socket.close()
             break
 

@@ -97,6 +97,10 @@ class Traffic:
             J1 = [(0, 0, 204), Traffic.t]
             J2 = [(0, 204, 102), Traffic.t]
             Traffic.display_light_component(J1, J2)
+        elif Traffic.t == 0:
+            J2 = [(0, 0, 204), Traffic.t]
+            J1 = [(0, 204, 102), Traffic.t]
+            Traffic.display_light_component(J1, J2)
 
         return [Traffic.t, Traffic.display_light_component(J1, J2)]
 

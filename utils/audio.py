@@ -36,7 +36,7 @@ class Audio:
             frames_per_buffer=CHUNK
         )
 
-        fig, ax = plt.subplots(1, 2, figsize=(15, 10))
+        fig, ax = plt.subplots(1, 2, figsize=(10, 5))
         x = np.arange(0, 2*CHUNK, 2)
         line1, = ax[0].plot(x, np.random.rand(CHUNK), 'r')
         line2, = ax[1].plot(x, np.random.rand(CHUNK), 'b')

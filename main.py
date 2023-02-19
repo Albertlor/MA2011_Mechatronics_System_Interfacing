@@ -15,26 +15,38 @@ importlib.invalidate_caches()
 importlib.reload(audio)
 Audio = audio.Audio
 
-difference = 0
-priority = 0
+# difference = 0
+# priority = 0
 
 def client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #host_ip = '10.91.84.87'
-    host_ip = '10.91.41.64'
+    host_ip = '192.168.0.121'
+    #host_ip = '10.91.41.64'
     port = 9999
     client_socket.connect((host_ip, port))
     while True:
-        data = client_socket.recv(1024).decode('utf-8')
-        difference = int(data[0])
-        priority = int(data[1])
+        #data = client_socket.recv(1024).decode('utf-8')
+        full_msg = ''
+        
+        msg = client_socket.recv(1024)
+        if len(msg) <= 0:
+            break
+        full_msg = msg.decode("utf-8")
+        dict_data = json.loads(full_msg)
+        print(dict_data)
+    # difference = int(data[0])
+    # priority = int(data[1])
         with open('config2.json') as f:
             config2 = json.load(f)
-        config2['difference'] = difference
-        config2['priority'] = priority
+        config2['difference'] = dict_data['difference']
+        config2['priority'] = dict_data['priority']
 
         with open('config2.json', 'w') as f:
             json.dump(config2, f)
+
+        cv2.waitKey(1500)
+        
 
 
 def traffic():
@@ -44,32 +56,20 @@ def traffic():
     time = 60
     previous_value = 0
     while time >= 0:
-        
-        # full_msg = ''
-        # while True:
-        #     msg = client_socket.recv(1024)
-        #     if len(msg) <= 0:
-        #         break
-        #     full_msg = msg.decode("utf-8")
-
-        
-        #     dict_data = json.loads(full_msg)
-        #     print(dict_data)
         try: 
             with open('config2.json') as f:
                 config2 = json.load(f)
 
             difference = config2['difference']
-            priority = config2['priority']
+            priority = config2['priority']           
 
+            # print(f'difference: {difference}, priority: {priority}')
             cv2.setTrackbarPos("Difference", "Input", difference)
             cv2.setTrackbarPos("Priority", "Input", priority)
-
-            print(f'difference: {difference}, priority: {priority}')
             traffic = Traffic(difference=difference, priority=priority)
             
             _, _, time = Traffic.track_difference()
-            cv2.waitKey(1000)
+            cv2.waitKey(1500)
             time -= 1
             time, color = traffic.traffic_light(time)
 
@@ -85,7 +85,11 @@ def traffic():
             emergency = config["EMERGENCY"]
             if emergency == 1:
                 cv2.waitKey(10000)
+         
             cv2.setTrackbarPos("Time", "Input", time)
+
+            if time == 0:
+                cv2.waitKey(10000)
             # transmission(color)
 
         except UnboundLocalError:
