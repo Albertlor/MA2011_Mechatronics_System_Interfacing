@@ -134,9 +134,11 @@ class Traffic:
 
         image1 = np.zeros((300, 300, 3), dtype = np.uint8)
         cv2.rectangle(image1, (0, 0), (300, 300), color1, -1)
+        cv2.putText(image1, "Junction 1", (60, 50), 0, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
         image2 = np.zeros((300, 300, 3), dtype = np.uint8)
         cv2.rectangle(image2, (0, 0), (300, 300), color2, -1)
+        cv2.putText(image2, "Junction 2", (60, 50), 0, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
         stacked = np.concatenate((image1, image2), axis=1)
         cv2.imshow("Junction 1 / Junction 2", stacked)
