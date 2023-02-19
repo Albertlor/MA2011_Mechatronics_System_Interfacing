@@ -35,8 +35,8 @@ tracking_objects2 = {}
 track_id1 = 1
 track_id2 = 1
 
-with open('config2.json') as f:
-    config2 = json.load(f)
+# with open('config2.json') as f:
+#     config2 = json.load(f)
 
 def vehicle_num_difference(tracking_objects1, tracking_objects2):
     num = 0

@@ -20,8 +20,8 @@ Audio = audio.Audio
 
 def client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #host_ip = '10.91.84.87'
-    host_ip = '192.168.0.121'
+    host_ip = '10.91.84.87'
+    #host_ip = '192.168.0.121'
     #host_ip = '10.91.41.64'
     port = 9999
     client_socket.connect((host_ip, port))
@@ -33,12 +33,18 @@ def client():
         if len(msg) <= 0:
             break
         full_msg = msg.decode("utf-8")
-        dict_data = json.loads(full_msg)
+        try:
+            dict_data = json.loads(full_msg)
+        except ValueError:
+            pass
         print(dict_data)
     # difference = int(data[0])
     # priority = int(data[1])
         with open('config2.json') as f:
-            config2 = json.load(f)
+            try:
+                config2 = json.load(f)
+            except ValueError:
+                pass
         config2['difference'] = dict_data['difference']
         config2['priority'] = dict_data['priority']
 
@@ -58,7 +64,10 @@ def traffic():
     while time >= 0:
         try: 
             with open('config2.json') as f:
-                config2 = json.load(f)
+                try:
+                    config2 = json.load(f)
+                except ValueError:
+                    pass
 
             difference = config2['difference']
             priority = config2['priority']           
@@ -81,8 +90,12 @@ def traffic():
             previous_value = current_value
             
             with open('utils/config.json') as f:
-                config = json.load(f)
+                try:
+                    config = json.load(f)
+                except ValueError:
+                    pass
             emergency = config["EMERGENCY"]
+            print(f'emergency status: {emergency}')
             if emergency == 1:
                 cv2.waitKey(10000)
          

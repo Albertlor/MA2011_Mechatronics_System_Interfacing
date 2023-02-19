@@ -169,7 +169,7 @@ def main():
         time, color = traffic.traffic_light(time)
         cv2.setTrackbarPos("Time", "Input", time)
 
-
+    
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 

@@ -95,8 +95,8 @@ class Audio:
         count = 0
         
         
-        greater_than_900 = x_val > 1100
-        lower_than_1200 = x_val < 1500
+        greater_than_900 = x_val > 900
+        lower_than_1200 = x_val < 1100
         frequency = np.where(greater_than_900&lower_than_1200)
         if y_val[frequency[0][0]] > 4500:
             count += 1
