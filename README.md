@@ -1,4 +1,4 @@
-**How to Run the Program
+**How to Run the Program**
 ```
 Open command prompt window
 ```
